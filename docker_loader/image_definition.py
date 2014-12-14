@@ -7,19 +7,67 @@ except ImportError:
 class ImageDefinition:
 
     base = None
+    """Equivalent of Dockerfile's FROM."""
+
     pull_base = True
+    """
+    Whether to pull the base image before the build, or expect it to be
+    already present in required version.
+    """
+
     maintainer = None
+    """Equivalent of Dockerfile's MAINTAINER."""
+
     hostname = None
+    """Container's hostname."""
+
     domainname = None
+    """Container's domainname."""
+
     exposed_ports = tuple()
+    """Equivalent of Dockerfile's EXPOSE. A sequence of integers."""
+
     volumes = tuple()
+    """Equivalent of Dockerfile's VOLUME. A sequence of volume paths."""
+
     environment = {}
+    """
+    Equivalent of multiple Dockerfile's ENV statements. A mapping of
+    environment variable names to their values.
+    """
+
     user = None
+    """Equivalent of Dockerfile's USER."""
+
     working_directory = None
+    """Equivalent of Dockerfile's WORKDIR."""
+
     entry_point = None
+    """Equivalent of Dockerfile's ENTRYPOINT."""
+
     command = None
+    """Equivalent of Dockerfile's CMD."""
+
+    build_volumes = {}
+    """
+    Specifies the volumes that shall be mounted in the container, but only for
+    the time of the build.
+
+    Example::
+
+        build_volumes = {
+            '/path/on/host': {
+                'bind': '/path/on/container',
+                'ro': True,
+            }
+        }
+    """
 
     provisioners = tuple()
+    """
+    Sequence of Provisioner instances, which will be run in the order provided.
+    The cleanup methods will be run in reverse order.
+    """
 
     def validate(self):
         def _validate_string(string):
@@ -74,5 +122,13 @@ class ImageDefinition:
             _validate_command(self.entry_point)
         if self.command is not None:
             _validate_command(self.command)
+
+        assert isinstance(self.build_volumes, Mapping)
+        for path, binding in self.build_volumes.items():
+            _validate_string(path)
+            assert set(binding.keys()).issubset({'bind', 'ro'})
+            _validate_string(binding['bind'])
+            if 'ro' in binding:
+                assert isinstance(binding['ro'], bool)
 
         assert isinstance(self.provisioners, Sequence)

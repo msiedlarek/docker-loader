@@ -28,6 +28,7 @@ class Builder:
             self.definition.base,
         )
         container_kwargs = {
+            'build_volumes': self.definition.build_volumes,
             'environment': self.definition.environment,
             'entrypoint': self.definition.entry_point,
             'hostname': self.definition.hostname,

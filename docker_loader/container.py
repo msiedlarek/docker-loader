@@ -45,12 +45,13 @@ class Container:
     STDERR_FILE = 'stderr'
 
     def __init__(self, client, image, encoding='utf-8',
-            **container_configuration):
+            build_volumes=None, **container_configuration):
         self.client = client
         self.encoding = encoding
         self.container_configuration = container_configuration
         self.container_configuration['image'] = image
         self.container_configuration['stdin_open'] = True
+        self.build_volumes = build_volumes or {}
         self.id = None
         self.temp_dir = None
 
@@ -156,6 +157,7 @@ class Container:
         os.chmod(command_local_path, 0755)
 
         additional_configuration.setdefault('binds', {})
+        additional_configuration['binds'].update(self.build_volumes)
         additional_configuration['binds'][self.temp_dir] = {
             'bind': self.TEMP_VOLUME,
             'ro': False,
