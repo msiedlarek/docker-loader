@@ -44,6 +44,8 @@ class Container:
     STDOUT_FILE = 'stdout'
     STDERR_FILE = 'stderr'
 
+    SHELL = '/bin/sh'
+
     def __init__(self, client, image, encoding='utf-8',
             build_volumes=None, **container_configuration):
         self.client = client
@@ -73,7 +75,7 @@ class Container:
             self.temp_dir = tempfile.mkdtemp()
         result = self.client.create_container(
             command=[
-                '/bin/sh',
+                self.SHELL,
                 '-c',
                 '{command_file} >{stdout_file} 2>{stderr_file}'.format(
                     command_file='/'.join((
