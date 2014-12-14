@@ -11,9 +11,10 @@ class Image:
     def __init__(self, client, id):
         self.client = client
         self.id = id
+        self.repository_tag = None
 
     def __str__(self):
-        return self.id[:12]
+        return self.repository_tag or self.id[:12]
 
     def tag(self, repository, tag=None, force=None, **kwargs):
         if tag is None:
@@ -32,6 +33,7 @@ class Image:
             force=force,
             **kwargs
         )
+        self.repository_tag = ':'.join((repository, tag))
         return self
 
     def remove(self, **kwargs):
@@ -39,7 +41,10 @@ class Image:
         self.client.remove_image(self.id, **kwargs)
 
     def get(self):
-        return self.client.get_image(self.id)
+        if self.repository_tag:
+            return self.client.get_image(self.repository_tag)
+        else:
+            return self.client.get_image(self.id)
 
     def save(self, path, compress=False):
         logger.info("Saving image {image} to: {file}".format(

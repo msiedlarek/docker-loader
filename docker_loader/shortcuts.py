@@ -7,8 +7,7 @@ import docker
 from docker_loader.builder import Builder
 
 
-def build(image_definition, client=None, repository=None, tag=None,
-        verbose=True):
+def build(image_definition, client=None, verbose=True):
     if verbose:
         logging.basicConfig(
             format='%(asctime)s %(levelname)s: %(message)s',
@@ -20,7 +19,4 @@ def build(image_definition, client=None, repository=None, tag=None,
     if client is None:
         client = docker.Client()
     builder = Builder(client, image_definition)
-    image = builder.run()
-    if repository:
-        image.tag(repository, tag=tag)
-    return image
+    return builder.run()
