@@ -1,6 +1,8 @@
-try:
+import six
+
+if six.PY3:
     from collections.abc import Sequence, Mapping
-except ImportError:
+else:
     from collections import Sequence, Mapping
 
 
@@ -71,14 +73,14 @@ class ImageDefinition:
 
     def validate(self):
         def _validate_string(string):
-            assert isinstance(string, str)
+            assert isinstance(string, six.string_types)
             assert string
 
         def _validate_command(command):
             assert isinstance(command, Sequence)
             assert len(command) > 0
             for element in command:
-                assert isinstance(element, str)
+                assert isinstance(element, six.string_types)
 
         _validate_string(self.base)
         assert isinstance(self.pull_base, bool)
@@ -103,14 +105,14 @@ class ImageDefinition:
 
         assert isinstance(self.volumes, Sequence)
         for volume in self.volumes:
-            assert isinstance(volume, str)
+            assert isinstance(volume, six.string_types)
             assert volume
 
         assert isinstance(self.environment, Mapping)
         for name, value in self.environment.items():
-            assert isinstance(name, str)
+            assert isinstance(name, six.string_types)
             assert name
-            assert isinstance(value, str)
+            assert isinstance(value, six.string_types)
 
         if self.user is not None:
             _validate_string(self.user)

@@ -119,7 +119,9 @@ class Container:
             )
         else:
             logger.info("Running: {}".format(
-                command if isinstance(command, str) else ' '.join(command)
+                command
+                if isinstance(command, six.string_types)
+                else ' '.join(command)
             ))
             exit_code, stdout, stderr = self.execute(
                 command,
