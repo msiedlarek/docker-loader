@@ -63,7 +63,9 @@ class Builder:
                 for port in self.definition.exposed_ports
             }
         if self.definition.volumes:
-            config['Volumes'] = self.definition.volumes
+            config['Volumes'] = {
+                volume: {} for volume in self.definition.volumes
+            }
         if self.definition.environment:
             config['Env'] = [
                 '='.join((name, value))
