@@ -107,7 +107,8 @@ class Builder:
         )
         allow_progress = sys.stdout.isatty()
         showing_progress = False
-        for line in map(json.loads, log_stream):
+        for line in log_stream:
+            line = json.loads(line)
             if 'progress' in line:
                 if allow_progress:
                     sys.stdout.write('{}{}: {}'.format(
