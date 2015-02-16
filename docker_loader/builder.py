@@ -17,6 +17,8 @@ class ImagePullError(Exception):
 
 class Builder:
 
+    DEFAULT_COMMAND = '/bin/sh'
+
     def __init__(self, client, image_definition):
         self.client = client
         self.definition = image_definition
@@ -75,6 +77,12 @@ class Builder:
             config['WorkingDir'] = self.definition.working_directory
         if self.definition.command:
             config['Cmd'] = self.definition.command
+        else:
+            base_config = self.client.inspect_image(self.definition.base)
+            config['Cmd'] = base_config['Config'].get(
+                'Cmd',
+                self.DEFAULT_COMMAND
+            )
         if additional_configuration is not None:
             config.update(additional_configuration)
         result = self.client.commit(
