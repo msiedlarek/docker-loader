@@ -55,6 +55,7 @@ class Builder:
             sys.exit(1)
 
     def commit(self, container, additional_configuration=None):
+        base_config = self.client.inspect_image(self.definition.base)
         logger.info("Commiting container {}...".format(container))
         config = {}
         if self.definition.exposed_ports:
@@ -73,12 +74,13 @@ class Builder:
             ]
         if self.definition.user:
             config['User'] = self.definition.user
+        else:
+            config['Cmd'] = base_config['Config']['User']
         if self.definition.working_directory:
             config['WorkingDir'] = self.definition.working_directory
         if self.definition.command:
             config['Cmd'] = self.definition.command
         else:
-            base_config = self.client.inspect_image(self.definition.base)
             config['Cmd'] = base_config['Config'].get(
                 'Cmd',
                 self.DEFAULT_COMMAND
