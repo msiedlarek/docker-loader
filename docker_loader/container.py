@@ -52,6 +52,7 @@ class Container:
         self.encoding = encoding
         self.container_configuration = container_configuration
         self.container_configuration['image'] = image
+        self.container_configuration['user'] = 'root'
         self.container_configuration['stdin_open'] = True
         self.build_volumes = build_volumes or {}
         self.id = None
@@ -73,6 +74,7 @@ class Container:
     def create(self):
         if self.temp_dir is None:
             self.temp_dir = tempfile.mkdtemp()
+            os.chmod(self.temp_dir, 0777)
         result = self.client.create_container(
             command=[
                 self.SHELL,
@@ -160,12 +162,6 @@ class Container:
                 command_file.write(script)
         os.chmod(command_local_path, 0755)
 
-        # Create empty stdout and stderr files.
-        stdout_local_path = os.path.join(self.temp_dir, self.STDOUT_FILE)
-        stderr_local_path = os.path.join(self.temp_dir, self.STDERR_FILE)
-        open(stdout_local_path, 'w').close()
-        open(stderr_local_path, 'w').close()
-
         additional_configuration.setdefault('binds', {})
         additional_configuration['binds'].update(self.build_volumes)
         additional_configuration['binds'][self.temp_dir] = {
@@ -196,6 +192,8 @@ class Container:
 
         exit_code = self.client.wait(self.id)
 
+        stdout_local_path = os.path.join(self.temp_dir, self.STDOUT_FILE)
+        stderr_local_path = os.path.join(self.temp_dir, self.STDERR_FILE)
         with open(stdout_local_path, 'r') as stdout_file:
             stdout = stdout_file.read()
         with open(stderr_local_path, 'r') as stderr_file:
