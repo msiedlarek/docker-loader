@@ -75,7 +75,7 @@ class Builder:
         if self.definition.user:
             config['User'] = self.definition.user
         else:
-            config['Cmd'] = base_config['Config']['User']
+            config['User'] = base_config['Config']['User']
         if self.definition.working_directory:
             config['WorkingDir'] = self.definition.working_directory
         if self.definition.command:
