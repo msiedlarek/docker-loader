@@ -160,6 +160,12 @@ class Container:
                 command_file.write(script)
         os.chmod(command_local_path, 0755)
 
+        # Create empty stdout and stderr files.
+        stdout_local_path = os.path.join(self.temp_dir, self.STDOUT_FILE)
+        stderr_local_path = os.path.join(self.temp_dir, self.STDERR_FILE)
+        open(stdout_local_path, 'w').close()
+        open(stderr_local_path, 'w').close()
+
         additional_configuration.setdefault('binds', {})
         additional_configuration['binds'].update(self.build_volumes)
         additional_configuration['binds'][self.temp_dir] = {
@@ -190,8 +196,6 @@ class Container:
 
         exit_code = self.client.wait(self.id)
 
-        stdout_local_path = os.path.join(self.temp_dir, self.STDOUT_FILE)
-        stderr_local_path = os.path.join(self.temp_dir, self.STDERR_FILE)
         with open(stdout_local_path, 'r') as stdout_file:
             stdout = stdout_file.read()
         with open(stderr_local_path, 'r') as stderr_file:
