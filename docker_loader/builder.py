@@ -106,8 +106,6 @@ class Builder:
             repository=repository,
             tag=tag
         ))
-
-        TERMINAL_ANSI_CLEAR_LINE = '\r\x1b[2K'
         log_stream = self.client.pull(
             repository,
             tag=tag,
@@ -119,8 +117,7 @@ class Builder:
             line = json.loads(line)
             if 'progress' in line:
                 if allow_progress:
-                    sys.stdout.write('{}{}: {}'.format(
-                        TERMINAL_ANSI_CLEAR_LINE,
+                    sys.stdout.write('\r{}: {}'.format(
                         line['id'],
                         line['progress']
                     ))
