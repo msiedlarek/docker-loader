@@ -65,6 +65,12 @@ class ImageDefinition:
         }
     """
 
+    build_volumes_from = tuple()
+    """
+    Specifies images to mount the volumes from, but only for the time of the
+    build.
+    """
+
     provisioners = tuple()
     """
     Sequence of Provisioner instances, which will be run in the order provided.
@@ -105,13 +111,11 @@ class ImageDefinition:
 
         assert isinstance(self.volumes, Sequence)
         for volume in self.volumes:
-            assert isinstance(volume, six.string_types)
-            assert volume
+            _validate_string(volume)
 
         assert isinstance(self.environment, Mapping)
         for name, value in self.environment.items():
-            assert isinstance(name, six.string_types)
-            assert name
+            _validate_string(name)
             assert isinstance(value, six.string_types)
 
         if self.user is not None:
@@ -132,5 +136,9 @@ class ImageDefinition:
             _validate_string(binding['bind'])
             if 'ro' in binding:
                 assert isinstance(binding['ro'], bool)
+
+        assert isinstance(self.build_volumes_from, Sequence)
+        for image_name in self.build_volumes_from:
+            _validate_string(image_name)
 
         assert isinstance(self.provisioners, Sequence)

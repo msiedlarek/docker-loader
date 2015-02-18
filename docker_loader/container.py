@@ -46,8 +46,8 @@ class Container:
 
     SHELL = '/bin/sh'
 
-    def __init__(self, client, image, encoding='utf-8',
-            build_volumes=None, **container_configuration):
+    def __init__(self, client, image, encoding='utf-8', build_volumes=None,
+            build_volumes_from=None, **container_configuration):
         self.client = client
         self.encoding = encoding
         self.container_configuration = container_configuration
@@ -55,6 +55,7 @@ class Container:
         self.container_configuration['user'] = 'root'
         self.container_configuration['stdin_open'] = True
         self.build_volumes = build_volumes or {}
+        self.build_volumes_from = build_volumes_from or []
         self.id = None
         self.temp_dir = None
 
@@ -168,6 +169,8 @@ class Container:
             'bind': self.TEMP_VOLUME,
             'ro': False,
         }
+        if self.build_volumes_from:
+            additional_configuration['volumes_from'] = self.build_volumes_from
         self.client.start(
             self.id,
             **additional_configuration
