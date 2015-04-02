@@ -39,7 +39,7 @@ setup(
         'six>=1.8.0',
     ],
     extras_require={
-        'ansible': ['ansible>=1.8.0'],
+        'ansible': ['ansible >=1.9.0, <1.10.0'],
     },
     tests_require=[
         'nose',

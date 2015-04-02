@@ -1,6 +1,6 @@
 class Connection(object):
 
-    def __init__(self, runner, host, port, user, password, *args, **kwargs):
+    def __init__(self, runner, host, port, *args, **kwargs):
         self.runner = runner
         self.host = host
         self.port = port
@@ -13,8 +13,11 @@ class Connection(object):
     def close(self):
         pass
 
-    def exec_command(self, cmd, tmp_path, sudo_user=None, sudoable=False,
-            executable='/bin/sh', in_data=None, su=None, su_user=None):
+    def exec_command(self, cmd, tmp_path, become_user, sudoable=False,
+            executable='/bin/sh', in_data=None):
+        if (sudoable and self.runner.become and self.runner.become_method
+                not in self.become_methods_supported):
+            raise NotImplementedError()
         exit_code, stdout, stderr = self.container.execute(
             [executable, '-c', cmd],
             stdin=in_data
