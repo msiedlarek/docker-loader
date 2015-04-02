@@ -29,6 +29,7 @@ class Connection(object):
             self.exec_command(
                 'cat > {}'.format(out_path),
                 '/tmp',
+                None,
                 in_data=input_file
             )
 
