@@ -1,3 +1,6 @@
+from ansible.constants import BECOME_METHODS
+
+
 class Connection(object):
 
     def __init__(self, runner, host, port, *args, **kwargs):
@@ -15,8 +18,8 @@ class Connection(object):
 
     def exec_command(self, cmd, tmp_path, become_user, sudoable=False,
             executable='/bin/sh', in_data=None):
-        if (sudoable and self.runner.become and self.runner.become_method
-                not in self.become_methods_supported):
+        if (sudoable and self.runner.become and
+                self.runner.become_method not in BECOME_METHODS):
             raise NotImplementedError()
         exit_code, stdout, stderr = self.container.execute(
             [executable, '-c', cmd],
