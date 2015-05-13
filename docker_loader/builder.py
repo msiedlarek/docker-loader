@@ -84,6 +84,8 @@ class Builder:
                 'Cmd',
                 self.DEFAULT_COMMAND
             )
+        if self.definition.labels:
+            config['Labels'] = self.definition.labels
         if additional_configuration is not None:
             config.update(additional_configuration)
         result = self.client.commit(

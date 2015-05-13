@@ -50,6 +50,11 @@ class ImageDefinition:
     command = None
     """Equivalent of Dockerfile's CMD."""
 
+    labels = {}
+    """
+    Mapping of label keys to values. Equivalent of Dockerfile's LABEL.
+    """
+
     build_volumes = {}
     """
     Specifies the volumes that shall be mounted in the container, but only for

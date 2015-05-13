@@ -35,7 +35,7 @@ setup(
     ],
     keywords='docker-loader loader docker container image',
     install_requires=[
-        'docker-py>=0.6.0',
+        'docker-py>=1.2.0',
         'six>=1.8.0',
     ],
     extras_require={
