@@ -22,6 +22,7 @@ Quick peek
        provisioners = [
            apt.AptUpdate(),
            apt.AptInstall(['redis-server']),
+           apt.AptClear(),
        ]
 
    build(Image).tag('msiedlarek/redis').save('image.tar.gz', compress=True)
