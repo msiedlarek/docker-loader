@@ -25,9 +25,13 @@ def pull_image(client, image):
         tag=tag,
         stream=True
     )
+    print_progress(log_stream)
+
+
+def print_progress(stream):
     allow_progress = sys.stdout.isatty()
     showing_progress = False
-    for line in log_stream:
+    for line in stream:
         line = json.loads(line)
         if 'progress' in line:
             if allow_progress:
