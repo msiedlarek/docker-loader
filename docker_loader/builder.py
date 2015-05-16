@@ -9,10 +9,6 @@ from docker_loader.utils import pull_image
 logger = logging.getLogger(__name__)
 
 
-class ImagePullError(Exception):
-    pass
-
-
 class Builder:
 
     DEFAULT_COMMAND = '/bin/sh'

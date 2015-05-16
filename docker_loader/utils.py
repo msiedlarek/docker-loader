@@ -8,7 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ImagePullError(Exception):
+class DockerError(Exception):
     pass
 
 
@@ -47,7 +47,7 @@ def print_progress(stream):
             if 'id' in line:
                 print('{}: {}'.format(line['id'], line['status']))
             elif 'error' in line:
-                raise ImagePullError(line['error'])
+                raise DockerError(line['error'])
             elif 'status' in line:
                 print(line['status'])
             else:
